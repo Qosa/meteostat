@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/css/weather-icons.min.css') }}">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                namespace = '/test';
+                var socket = io.connect('http://127.0.0.1:5000/');
+                window.setInterval(function(){
+                    socket.emit('my_ping');
+                socket.on('pong', function(msg) {
+                    $('#temp').text(msg.temp+'C');
+                    $('#humidity').text(msg.humidity+'%');
+                    $('#pressure').text(msg.pressure+'hPa');
+                    $('#noise').text(msg.noise+'dB');
+                    $('#elevation').text(msg.elevation+'m.a.s.l.');
+			$('#lux').text(msg.lux+'lux');
+                    });
+                    },20000);
+            });
+        </script>
+    </head>
+    <body style="width:100%; height:100%; padding:0px;" background="{{ url_for('static',filename='water-rain-raindrops-drops.jpg') }}";>
+        <div class="container" style="height:100vh; vertical-align: middle; margin-top: 10%;">
+                <div class="jumbotron" style="color: white; height: 640px; width: 850px; margin: 0 auto; background: rgba(0, 0, 0, 0.5); padding: 5px;">
+                    <div id="city"><h1 style="font-weight: bold; margin-top:0;">{{ city }}</h1></div>
+                        <br/>
+                    <div class="row">
+                        <div class="col-sm">
+                                <i class="wi wi-thermometer" aria-hidden="true" style="padding-left:80px;font-size:76px;"></i>
+                                <h1 style="font-size: 76px; float:right; font-weight: bold;padding-right:60px;" id="temp"></h1>
+                        </div>
+                        <div class="col-sm">
+                            <td style="text-align:center; ">
+                                <i class="wi wi-day-sunny" style="font-size: 76px; padding-left:160px;"></i><h2 style="text-align:center;">{{ conditions }}</h2><h5 style="text-align:center;"> {{ cloudDescr }}</h5>
+                            </td>
+                        </div>
+                     </div>
+                    <br/>
+                    <hr style="background-color:white;"/>
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-sm">
+                            <i class="wi wi-humidity" style="font-size: 32px; text-align:center;padding-left:30px;"></i><h4 style="float:right;padding-right:30px;" id="humidity">!sensor!</h4>
+                        </div>
+                        <div class="col-sm">
+                            <i class="wi wi-barometer" style="font-size: 32px; text-align:center;padding-left:20px;"></i><h4 style="float:right;padding-right:10px;" id="pressure">!sensor!</h4>
+                        </div>
+                        <div class="col-sm">
+                            <i class="wi wi-earthquake" style="font-size: 32px; text-align:center;padding-left:30px;"></i><h4 style="float:right;padding-right:20px;" id="noise">!sensor!</h4>
+                        </div>
+                        <div class="col-sm">
+                            <i class="wi wi-direction-up" style="font-size: 32px; text-align:center;"></i><h4 style="float:right;padding-right:20px;" id="elevation">!sensor!</h4>
+                        </div>
+                    </div>
+                    <br/>
+                    <hr style="background-color:white;"/>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="row">
+                                <div class="col-sm" style="padding-left:60px;">
+                                    <i class="wi wi-strong-wind" style="font-size: 76px;"></i>
+                                </div>
+                                <div class="col-sm" style="padding-right:60px;">
+                                    <h1 style="font-size: 32px; text-align:right;">{{ windSpeed }}kph</h1><h1 style="font-size: 32px; text-align:right;">{{ windDirection }}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                                <i class="wi wi-smog" style="font-size: 76px; text-align:center; padding-left:60px;"></i>
+                                <h1 style="font-size: 32px; float:right; padding-right:60px;">!sensor!</h1>
+                        </div>
+                     </div>
+                    <br/>
+                    <hr style="background-color:white;"/>
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-sm">
+                            <i class="wi wi-sunrise" style="font-size: 32px; text-align:center;padding-left:30px;"></i><h4 style="float:right;padding-right:20px;">{{ sunrise }}</h4>
+                        </div>
+                        <div class="col-sm">
+                            <i class="wi wi-sunset" style="font-size: 32px; text-align:center;padding-left:20px;"></i><h4 style="float:right;padding-right:20px;">{{ sunset }}</h4>
+                        </div>
+                        <div class="col-sm">
+                            <i class="wi wi-moon-waning-crescent-3" style="font-size: 32px; text-align:center;padding-left:30px;"></i><h4 style="float:right;padding-right:20px;" id="lux">!sensor!</h4>
+                        </div>
+                        <div class="col-sm">
+                            <div class="row">
+                                <div class="col-sm" style="font-size: 32px; text-align:center;">
+                                    <i class="wi wi-time-2"></i>
+                                </div>
+                                <div class="col-sm" style="float:right;padding-right: 30px;" name="time">
+                                    <h5>{{ time }}</h5>
+                                    <h5>{{ date }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </body>
+</html>
